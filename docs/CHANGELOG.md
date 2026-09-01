@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+- Made Headquarters replies vertically scrollable and automatically follow the
+  latest wrapped line. The viewport expands when idle and contracts during
+  push-to-talk so long replies remain readable without covering the recording
+  lane.
 - Reduced negotiated Passport reply audio to 8 kHz IMA ADPCM while preserving
   16 kHz microphone capture and legacy 16 kHz speaker blocks. Reply playback now
   prebuffers three 100 ms blocks, and the iPhone sends against a stable 100 ms

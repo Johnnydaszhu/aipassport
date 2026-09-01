@@ -56,6 +56,8 @@ LV_FONT_DECLARE(lv_font_terminal_zh_16);
 #define VOICE_BAR_COUNT 7
 #define CONNECTION_SIGNAL_BAR_COUNT 4
 #define VOICE_FEEDBACK_MS 1600
+#define CHAT_ANSWER_HEIGHT 120
+#define CHAT_ANSWER_RECORDING_HEIGHT 78
 #define SPEAKER_CONTROL_SEQUENCE 0xFF
 #define SPEAKER_CONTROL_START 0xA0
 #define SPEAKER_CONTROL_END 0xA1
@@ -140,6 +142,7 @@ static lv_obj_t *s_voice_bars[VOICE_BAR_COUNT];
 static lv_obj_t *s_chat_card;
 static lv_obj_t *s_chat_user_name_label;
 static lv_obj_t *s_chat_user_label;
+static lv_obj_t *s_chat_answer_view;
 static lv_obj_t *s_chat_answer_label;
 static lv_obj_t *s_chat_status_label;
 static lv_obj_t *s_settings_card;
@@ -909,6 +912,19 @@ static void render_board(const passport_board_t *board)
     }
 }
 
+static void scroll_chat_answer_to_bottom(lv_anim_enable_t anim)
+{
+    lv_obj_update_layout(s_chat_answer_view);
+    lv_obj_scroll_to_y(s_chat_answer_view, LV_COORD_MAX, anim);
+}
+
+static void set_chat_answer_height(int32_t height)
+{
+    if (lv_obj_get_height(s_chat_answer_view) == height) return;
+    lv_obj_set_height(s_chat_answer_view, height);
+    scroll_chat_answer_to_bottom(LV_ANIM_OFF);
+}
+
 static void render_chat(const passport_board_t *board)
 {
     lv_label_set_text_fmt(
@@ -920,10 +936,13 @@ static void render_chat(const passport_board_t *board)
         s_chat_user_label,
         board->dialogue_user[0] ? board->dialogue_user : ""
     );
-    lv_label_set_text(
-        s_chat_answer_label,
-        board->dialogue_answer[0] ? board->dialogue_answer : ""
-    );
+    const char *answer = board->dialogue_answer[0] ? board->dialogue_answer : "";
+    if (strcmp(lv_label_get_text(s_chat_answer_label), answer) != 0) {
+        lv_label_set_text(s_chat_answer_label, answer);
+        scroll_chat_answer_to_bottom(
+            s_companion_page == COMPANION_PAGE_CONVERSATION ? LV_ANIM_ON : LV_ANIM_OFF
+        );
+    }
     const char *status = "长按上键说话";
     if (s_speaker_active) {
         status = "总部说话中";
@@ -1007,6 +1026,7 @@ static void show_companion_page(companion_page_t page)
         lv_obj_add_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
         passport_board_t board = board_load(NULL);
         render_chat(&board);
+        scroll_chat_answer_to_bottom(LV_ANIM_OFF);
     } else {
         lv_obj_add_flag(s_goal_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_tasks_card, LV_OBJ_FLAG_HIDDEN);
@@ -1029,6 +1049,7 @@ static void render_voice_panel(uint32_t now)
     if (!visible) {
         lv_obj_add_flag(s_voice_panel, LV_OBJ_FLAG_HIDDEN);
         if (s_companion_page == COMPANION_PAGE_CONVERSATION) {
+            set_chat_answer_height(CHAT_ANSWER_HEIGHT);
             lv_obj_remove_flag(s_chat_status_label, LV_OBJ_FLAG_HIDDEN);
         }
         return;
@@ -1039,9 +1060,10 @@ static void render_voice_panel(uint32_t now)
                             && s_ptt_route == PTT_ROUTE_CONVERSATION;
     lv_obj_remove_flag(s_voice_panel, LV_OBJ_FLAG_HIDDEN);
     if (inline_conversation) {
+        set_chat_answer_height(CHAT_ANSWER_RECORDING_HEIGHT);
         lv_obj_add_flag(s_chat_status_label, LV_OBJ_FLAG_HIDDEN);
         // Keep the recording state in the user's right-hand lane. The HQ reply
-        // ends at y=241, so this starts below it instead of covering its last row.
+        // viewport contracts to end at y=241, above the recording lane.
         lv_obj_set_pos(s_voice_panel, 48, 245);
         lv_obj_set_size(s_voice_panel, 176, 65);
         lv_obj_set_style_bg_opa(s_voice_panel, LV_OPA_TRANSP, 0);
@@ -1054,6 +1076,9 @@ static void render_voice_panel(uint32_t now)
         lv_obj_set_size(s_voice_hint, 176, 18);
         lv_obj_set_style_text_align(s_voice_hint, LV_TEXT_ALIGN_RIGHT, 0);
     } else {
+        if (s_companion_page == COMPANION_PAGE_CONVERSATION) {
+            set_chat_answer_height(CHAT_ANSWER_HEIGHT);
+        }
         lv_obj_set_pos(s_voice_panel, 12, 176);
         lv_obj_set_size(s_voice_panel, 216, 128);
         lv_obj_set_style_bg_color(s_voice_panel, lv_color_hex(theme->surface), 0);
@@ -1299,7 +1324,15 @@ void demo_ble_enter(void)
     s_chat_user_label = make_value_label(s_chat_card, 48, 24, 176, 54);
     lv_obj_set_style_text_align(s_chat_user_label, LV_TEXT_ALIGN_RIGHT, 0);
     make_terminal_label(s_chat_card, "总部 >", 0, 91);
-    s_chat_answer_label = make_value_label(s_chat_card, 0, 112, 176, 78);
+    s_chat_answer_view = lv_obj_create(s_chat_card);
+    lv_obj_set_pos(s_chat_answer_view, 0, 112);
+    lv_obj_set_size(s_chat_answer_view, 176, CHAT_ANSWER_HEIGHT);
+    lv_obj_set_scroll_dir(s_chat_answer_view, LV_DIR_VER);
+    lv_obj_set_scrollbar_mode(s_chat_answer_view, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_style_bg_opa(s_chat_answer_view, LV_OPA_TRANSP, 0);
+    lv_obj_set_style_border_width(s_chat_answer_view, 0, 0);
+    lv_obj_set_style_pad_all(s_chat_answer_view, 0, 0);
+    s_chat_answer_label = make_value_label(s_chat_answer_view, 0, 0, 176, LV_SIZE_CONTENT);
     s_chat_status_label = make_terminal_label(s_chat_card, "长按上键说话_ ", 0, 239);
     lv_obj_add_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
 
@@ -1385,6 +1418,7 @@ void demo_ble_exit(void)
         s_chat_card = NULL;
         s_chat_user_name_label = NULL;
         s_chat_user_label = NULL;
+        s_chat_answer_view = NULL;
         s_chat_answer_label = NULL;
         s_chat_status_label = NULL;
         s_settings_card = NULL;
