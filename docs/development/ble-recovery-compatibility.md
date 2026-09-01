@@ -64,7 +64,9 @@ Upload only `build/FoloToy-AI-Passport-full.bin`; the similarly named app-only
 Never run `idf.py erase-flash` on a provisioned device. It destroys both the
 per-device identity and permanent Recovery. Prefer mini-program installation or
 the segmented `idf.py flash` development command, which does not write an image
-for the protected partitions. A raw single-file write from `0x0` is safe only
-when its byte range ends before `cardid`; a merged artifact containing later
-resource partitions spans the gap and must not be raw-flashed to a provisioned
-device.
+for the protected partitions. A raw single-file write from `0x0` may preserve
+`cardid` and Recovery when its byte range ends before them, but it still covers
+runtime NVS at `0x9000` and clears saved Bluetooth bonds. Use it on a paired
+device only when that bond reset is intentional. A merged artifact containing
+later resource partitions spans the protected gap and must not be raw-flashed
+to a provisioned device at all.

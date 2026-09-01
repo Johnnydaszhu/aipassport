@@ -6,6 +6,62 @@
 
 ## Unreleased
 
+- Reduced negotiated Passport reply audio to 8 kHz IMA ADPCM while preserving
+  16 kHz microphone capture and legacy 16 kHz speaker blocks. Reply playback now
+  prebuffers three 100 ms blocks, and the iPhone sends against a stable 100 ms
+  cadence to prevent BLE queue underruns and overruns during longer replies.
+- Set Passport reply playback to full volume by default. The conversation page
+  now places the user's named transcript on the right and Headquarters on the
+  left, keeps its recording waveform in the user's lane, and lets a short UP
+  press return to the task dashboard while a long UP press continues speaking.
+  Both UP and DOWN push-to-talk routes now play the same short rising cue before
+  microphone capture starts, keeping the cue out of the recording sent to iPhone.
+- Persist the iPhone BLE bond used by the encrypted companion characteristics,
+  so ordinary App reinstalls and reconnects no longer leave CoreBluetooth and
+  the Passport with mismatched pairing keys.
+- Start directly in the TheGreatMe terminal after boot so BLE discovery and
+  reconnection do not depend on manually reopening a demo page. Holding OK still
+  exits to the hardware demo menu for diagnostics.
+- Aligned connectable advertising with the standard NimBLE per-procedure GAP
+  callback so connection and subscription events have one explicit owner.
+- Added a four-bar link indicator to the terminal header: it stays dim while
+  the iPhone is disconnected and lights to full signal once both BLE data
+  channels are ready.
+- Reworked the Passport conversation page into a frameless terminal exchange:
+  the user's line and the AI response now read like adjacent command prompts,
+  while recognition, typing, and speech states appear inline. Removed visible
+  implementation labels such as fast mode and multi-turn context, and made the
+  push-to-talk waveform part of the terminal flow instead of a second card.
+  Empty-state guidance is now a single short prompt instead of repeated labels,
+  placeholders, and footer instructions.
+- Simplified the companion header to the two-line product identity "The Great
+  Me" and "Agent Terminal". Removed the firmware version and active-theme label
+  from the dashboard header; version and theme details remain in Settings.
+- Advertise the companion service as its native 16-bit `0xA2B0` UUID in the
+  primary BLE packet and move the device name to scan response, allowing
+  CoreBluetooth service-filtered scans to discover AI Passport instead of
+  remaining in "Looking" indefinitely.
+- Rebuilt the TheGreatMe companion page as a single-color CRT terminal with
+  dense status panes, square one-pixel dividers, and amber-phosphor glow. Short
+  UP/DOWN presses move the highlighted selection through today's task list below
+  the same goal card used by the iPhone. Holding UP opens the conversation detail
+  page and starts push-to-talk; releasing it sends audio to the iPhone for ASR and a
+  fast, multi-turn AI reply. The reply returns as both text and locally
+  synthesized speech for the Passport speaker. Holding DOWN instead routes the
+  recording into the iPhone home voice flow for automatic minimum-win, obstacle,
+  and task analysis. Pressing OK opens a true full-screen Settings page; OK
+  cycles amber, black, warm-white, and digital-green terminal skins there, and
+  UP returns. Settings now keeps only connection status, firmware version, and
+  theme selection instead of repeating operational and AI-mode details. All
+  visible system copy is consistently Simplified Chinese instead of mixing Chinese data with English
+  controls and status text. A bundled 1-bit, 16 px
+  Simplified Chinese font covers all 7,445 decoded GB2312 characters without
+  depending on LVGL's small CJK subset.
+- Turned the BLE demo into a TheGreatMe companion page: connect securely to
+  iPhone, synchronize its goal/task board, stream route-tagged conversation or
+  task audio as framed IMA ADPCM, and receive AI reply audio over a dedicated
+  speaker characteristic. Audio frame buffers live outside the worker stack so
+  entering the companion page remains stable on-device.
 - Made mini-program BLE install compatibility a template-level invariant: fixed
   protected `cardid`/Recovery partitions, retained the five-second UP-key
   Recovery boot hook, and added CI validation for merged-image structure,

@@ -239,7 +239,7 @@ sudo usermod -aG dialout "${USER}"
 
 烧录前关闭 WebSerial 页面和其他串口监视器。不要长期以 root 身份运行日常开发流程。使用 `Ctrl+]` 退出 ESP-IDF monitor。
 
-优先从 `0x0` 烧录经过验证的合并镜像：
+只有空白设备或明确需要完整替换时，才从 `0x0` 烧录经过验证的合并镜像：
 
 ```bash
 python -m esptool --chip esp32c3 -p <port> -b 460800 \
@@ -247,8 +247,11 @@ python -m esptool --chip esp32c3 -p <port> -b 460800 \
 idf.py -p <port> monitor
 ```
 
-普通的 `build/FoloToy-AI-Passport.bin` 只是 app，只能位于 `0x10000`，不得烧到
-`0x0`。`idf.py flash` 只用于明确需要的增量开发烧录，不作为默认交付或验收方式。
+合并镜像会在 `0x9000` 的运行时 NVS 分区范围内包含 `0xFF`。esptool 会先擦除写入
+覆盖的全部扇区，因此从 `0x0` 直刷会清掉已保存的 NimBLE 配对密钥，即使 `cardid`
+和 Recovery 仍受保护。对已有身份或已经配对的开发设备，优先使用小程序安装或分段
+`idf.py flash`；普通应用镜像只能写到 `0x10000`。如果完整烧录已经让旧配对失效，
+在手机系统蓝牙设置中忽略一次 AI Passport，再重新配对。
 
 ## 故障处理
 

@@ -28,6 +28,14 @@ run_static_checks() {
         tests/test_ui_pixel_math.c main/ui_pixel_math.c \
         -o "${test_dir}/test_ui_pixel_math"
     "${test_dir}/test_ui_pixel_math"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_passport_protocol.c main/passport_protocol.c \
+        -o "${test_dir}/test_passport_protocol"
+    "${test_dir}/test_passport_protocol"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_adpcm.c main/adpcm.c \
+        -o "${test_dir}/test_adpcm"
+    "${test_dir}/test_adpcm"
     python3 tests/test_verify_firmware.py
     rm -rf "${test_dir}"
     echo "Host tests: PASS"
@@ -54,6 +62,9 @@ run_firmware_checks() (
     install -m 0644 \
         "${validation_build_dir}/FoloToy-AI-Passport-full.bin" \
         "${repo_root}/build/FoloToy-AI-Passport-full.bin"
+    install -m 0644 \
+        "${validation_build_dir}/FoloToy-AI-Passport.bin" \
+        "${repo_root}/build/FoloToy-AI-Passport.bin"
     echo "Firmware build: PASS"
 )
 

@@ -14,6 +14,12 @@ All Actions are pinned to full commit SHAs. The build job has `contents: read`; 
 
 Open `https://ai-passport.folotoy.cn/tools/web-flasher/`, connect the USB JTAG/serial device, select the release's merged `FoloToy-AI-Passport-full.bin`, choose a baud rate such as 460800, and write it from `0x0`. The browser performs local writing and verification; it does not upload the firmware file.
 
+This is a full replacement path: the write covers runtime NVS at `0x9000` and
+clears saved Bluetooth bonds. After using it on a previously paired device,
+forget AI Passport once in the phone's Bluetooth settings and pair again. Use
+the mini-program Recovery installer for routine updates that should preserve
+the existing bond.
+
 For board and flashing details, see [the hardware development guide](../hardware-design/AI_HARDWARE_DEVELOPMENT_GUIDE.md).
 
 ## Release title

@@ -24,7 +24,7 @@ static const demo_entry_t DEMOS[] = {
     { "Audio",   demo_audio_enter,   demo_audio_exit,   demo_audio_key   },
     { "Battery", demo_battery_enter, demo_battery_exit, demo_battery_key },
     { "Wi-Fi",   demo_wifi_enter,    demo_wifi_exit,    demo_wifi_key    },
-    { "BLE",     demo_ble_enter,     demo_ble_exit,     demo_ble_key     },
+    { "TheGreatMe", demo_ble_enter,   demo_ble_exit,     demo_ble_key     },
     { "Low Power", demo_low_power_enter, demo_low_power_exit, demo_low_power_key },
 };
 #define DEMO_COUNT (sizeof(DEMOS) / sizeof(DEMOS[0]))
@@ -132,7 +132,15 @@ void app_main(void) {
     s_ok[5] = true;
     s_ok[6] = true;
 
-    if (bsp_lvgl_lock(1000)) { enter_menu(); bsp_lvgl_unlock(); }
+    // The shipping experience is the TheGreatMe terminal, so start its BLE
+    // companion immediately after boot. The shared long-OK handler still exits
+    // to the hardware demo menu when board diagnostics are needed.
+    if (bsp_lvgl_lock(1000)) {
+        s_sel = 5;
+        s_active = 5;
+        DEMOS[s_active].enter();
+        bsp_lvgl_unlock();
+    }
 
     ESP_LOGI(TAG, "就绪:Display=%d Button=%d Audio=%d Battery=%d",
              s_ok[0], s_ok[1], s_ok[2], s_ok[3]);

@@ -9,6 +9,9 @@ idf_component_register(
          "demo_radio.c"
          "demo_wifi.c"
          "demo_ble.c"
+         "lv_font_terminal_zh_16.c"
+         "passport_protocol.c"
+         "adpcm.c"
          "demo_low_power.c"
     INCLUDE_DIRS "."
     REQUIRES bsp bt esp_event esp_hw_support esp_netif esp_timer esp_wifi nvs_flash

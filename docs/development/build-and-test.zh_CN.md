@@ -8,8 +8,9 @@
 [环境引导](environment-setup.zh_CN.md)完成安装。
 
 > 固件编译优先运行 `./tools/validate.sh --firmware`，烧录优先把验证通过的
-> `build/FoloToy-AI-Passport-full.bin` 写入空白设备；对已有身份的设备，只有合并文件
-> 在保护区 `cardid` 之前结束时才可从 `0x0` 直刷，其余情况优先用小程序或分段
+> `build/FoloToy-AI-Passport-full.bin` 写入空白设备；只有明确需要完整替换时才从
+> `0x0` 直刷。即使合并文件在保护区 `cardid` 之前结束，它仍会覆盖 `0x9000` 的
+> 运行时 NVS 并清掉蓝牙配对记录。对已有身份或已经配对的设备，优先用小程序或分段
 > `idf.py flash`。`idf.py build` 和
 > `idf.py flash` 只作为增量开发命令，不作为默认交付方式。
 

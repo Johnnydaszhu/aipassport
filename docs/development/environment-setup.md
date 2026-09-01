@@ -283,7 +283,8 @@ Close WebSerial pages and other serial monitors before flashing. Do not run the
 normal development flow permanently as root. Exit the ESP-IDF monitor with
 `Ctrl+]`.
 
-Prefer flashing the verified merged image from offset `0x0`:
+Use the verified merged image from offset `0x0` only for a blank device or an
+intentional full replacement:
 
 ```bash
 python -m esptool --chip esp32c3 -p <port> -b 460800 \
@@ -291,10 +292,14 @@ python -m esptool --chip esp32c3 -p <port> -b 460800 \
 idf.py -p <port> monitor
 ```
 
-The ordinary `build/FoloToy-AI-Passport.bin` is application-only and belongs at
-`0x10000`; it must not be written to `0x0`. Use `idf.py flash` only for an
-intentional incremental development flash, not as the default delivery or
-acceptance path.
+The merged image contains `0xFF` across the runtime NVS partition at `0x9000`.
+Because esptool erases every sector covered by a write, raw-flashing that image
+from `0x0` clears saved NimBLE bonding keys even though `cardid` and Recovery
+remain protected. For a provisioned or previously paired development device,
+prefer mini-program installation or segmented `idf.py flash`; use the ordinary
+application image only at `0x10000`. If a full flash has already invalidated the
+bond, forget AI Passport in the phone's Bluetooth settings once, then pair
+again.
 
 ## Failure handling
 

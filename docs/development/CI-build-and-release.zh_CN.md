@@ -37,6 +37,10 @@
 
 步骤：连接设备（USB JTAG/serial debug unit）→ 选择本 Release 的合并固件 `FoloToy-AI-Passport-full.bin` → 选择波特率（如 460800）→ 开始写入。目标是 8MB Flash 板卡，无需其它参数。
 
+这是完整替换流程：写入会覆盖 `0x9000` 的运行时 NVS，并清掉已经保存的蓝牙配对
+记录。对已经配对过的设备使用后，需要在手机系统蓝牙设置中忽略一次 AI Passport，
+再重新配对。日常升级应使用能保留现有配对的小程序 Recovery 安装流程。
+
 ## Release 标题
 
 当本仓库从同一棵源码树发布多个不同应用时，只有版本号看不出这个 Release 是哪个应用。给每个 tag 起一个
