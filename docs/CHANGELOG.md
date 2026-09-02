@@ -6,6 +6,17 @@
 
 ## Unreleased
 
+- Match the Passport terminal chrome to the language selected in TheGreatMe.
+  The BLE board protocol now carries the resolved App language and updates the
+  terminal immediately for Simplified Chinese, Traditional Chinese, English,
+  Spanish, French, German, Korean, and Japanese, with embedded glyph coverage
+  for every localized terminal label.
+- Added quick double-OK from the task dashboard to open the selected task in a
+  full-screen detail view. UP/DOWN continues switching tasks there, and another
+  double-OK returns to the dashboard without changing the existing single-OK
+  Settings action.
+- Removed the numeric percentage from the Passport task dashboard while keeping
+  the goal progress bar as the visual progress indicator.
 - Made Headquarters replies vertically scrollable and automatically follow the
   latest wrapped line. The viewport expands when idle and contracts during
   push-to-talk so long replies remain readable without covering the recording

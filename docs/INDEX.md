@@ -22,7 +22,6 @@ Use this page to discover repository documentation. `authoritative` documents de
 | [development/coding-conventions.md](development/coding-conventions.md) | C and firmware conventions | authoritative |
 | [development/CI-validation.md](development/CI-validation.md) | Pull-request and main-branch validation | authoritative |
 | [development/CI-build-and-release.md](development/CI-build-and-release.md) | Tagged firmware builds and releases | authoritative |
-| [development/CI-sync-main.md](development/CI-sync-main.md) | Fork upstream synchronization | authoritative |
 | [development/publish-to-community.md](development/publish-to-community.md) | Publish firmware to the AI Passport community market | authoritative |
 | [development/project-completion.md](development/project-completion.md) | Project completion flow (optional closing actions) | authoritative |
 | [development/file-issues.md](development/file-issues.md) | Filing a suggestion as an upstream GitHub issue | authoritative |

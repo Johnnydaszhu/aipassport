@@ -58,6 +58,31 @@ static bool parse_dialogue_status(
     return true;
 }
 
+static bool parse_language(const uint8_t *text, size_t len, passport_language_t *language)
+{
+    if (!text || !language || len == 0) return false;
+    if (len == 7 && memcmp(text, "zh-Hans", len) == 0) {
+        *language = PASSPORT_LANGUAGE_ZH_HANS;
+    } else if (len == 7 && memcmp(text, "zh-Hant", len) == 0) {
+        *language = PASSPORT_LANGUAGE_ZH_HANT;
+    } else if (len == 2 && memcmp(text, "en", len) == 0) {
+        *language = PASSPORT_LANGUAGE_EN;
+    } else if (len == 2 && memcmp(text, "es", len) == 0) {
+        *language = PASSPORT_LANGUAGE_ES;
+    } else if (len == 2 && memcmp(text, "fr", len) == 0) {
+        *language = PASSPORT_LANGUAGE_FR;
+    } else if (len == 2 && memcmp(text, "de", len) == 0) {
+        *language = PASSPORT_LANGUAGE_DE;
+    } else if (len == 2 && memcmp(text, "ko", len) == 0) {
+        *language = PASSPORT_LANGUAGE_KO;
+    } else if (len == 2 && memcmp(text, "ja", len) == 0) {
+        *language = PASSPORT_LANGUAGE_JA;
+    } else {
+        return false;
+    }
+    return true;
+}
+
 bool passport_board_apply(passport_board_t *board, const uint8_t *payload, size_t len)
 {
     if (!board || !payload || len == 0 || len > PASSPORT_BOARD_PAYLOAD_CAP) return false;
@@ -105,6 +130,10 @@ bool passport_board_apply(passport_board_t *board, const uint8_t *payload, size_
             }
             case 'U':
                 if (!copy_text(next.user_name, value, value_len)) return false;
+                changed = true;
+                break;
+            case 'L':
+                if (!parse_language(value, value_len, &next.language)) return false;
                 changed = true;
                 break;
             case 'Q':

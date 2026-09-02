@@ -234,7 +234,7 @@ General board acceptance:
 | Codec/I2S | 1 kHz tone, non-zero recording, correct playback speed, format changes, page exit |
 | Battery | plausible SOC/mV, graceful missing-device behavior, intermittent-I2C recovery |
 | Wi-Fi | visible scan count/SSID/RSSI, rescan, repeated entry/exit |
-| Bluetooth LE | phone sees `FoloPassport`, restart advertising, advertising stops on exit, repeated entry/exit |
+| Bluetooth LE | phone sees connectable `AI Passport`, encrypted event/audio characteristics subscribe, reconnect restores the bond, repeated terminal/menu entry does not restart |
 | Light/deep sleep | select with UP/DOWN; 2 s light sleep resumes with backlight; 5 s deep sleep restarts with timer cause and retained count |
 | DMA/memory/UI | build memory report, runtime minimum heap/largest block, stable concurrent audio/display |
 

@@ -4,6 +4,11 @@ English | [简体中文](README.zh_CN.md)
 
 FoloToy AI Passport is open wearable AI hardware. This repository is the development baseline for the device. It keeps the **hardware facts, stable interfaces, resource boundaries, reference implementations, and validation methods** needed to build applications in one place.
 
+This downstream checkout currently boots into the TheGreatMe task and voice
+terminal. The generic hardware demos remain available through a long OK press,
+while the application-specific behavior is summarized in the root
+[`README.md`](../README.md).
+
 The repository is organized around the following principles:
 
 - `main` is the smallest complete runnable baseline and an executable description of the current hardware capabilities.
@@ -23,7 +28,7 @@ The table below describes the application capabilities implemented by the curren
 | Audio | ES8311 with full-duplex PCM over I2S0, supporting playback and microphone capture | `bsp_audio_*` | PCM reads and writes block and belong in a worker task; format changes must retain the BSP close/open sequence |
 | Battery | CW2017 state-of-charge and voltage readings | `bsp_battery_*` | This capability is optional at runtime; accuracy depends on the cell and battery profile and is not equivalent to a calibrated result |
 | Wi-Fi | On-demand 2.4 GHz STA scan demo | `main/demo_wifi.c` | Scans only; it does not connect, store credentials, or validate antenna/RF performance |
-| Bluetooth LE | On-demand non-connectable NimBLE advertising as `FoloPassport` | `main/demo_ble.c` | ESP32-C3 does not support Bluetooth Classic; radio range, coexistence, and power draw require device measurements |
+| Bluetooth LE | Connectable encrypted NimBLE peripheral named `AI Passport`, with persistent bonding and the `0xA2B0` companion service | `main/demo_ble.c` | ESP32-C3 does not support Bluetooth Classic; the connected task and voice workflow requires a compatible iPhone companion; radio range, coexistence, and power draw require device measurements |
 | Low power | Two-second light sleep and five-second deep sleep, both with RTC timer wakeup | `main/demo_low_power.c` | Deep sleep restarts the application; the current demo exposes RTC timer wake only |
 | Shared bus | ES8311 and CW2017 share I2C0 | `bsp_i2c_*` | Every device must reuse the bus owned by the BSP; do not create another bus on the same port for scanning or a new device |
 | Logging and flashing | Native ESP32-C3 USB Serial/JTAG | ESP-IDF console | GPIO18/19 are reserved for USB; the default UART0 TX on GPIO21 conflicts with the backlight |

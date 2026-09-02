@@ -44,6 +44,7 @@ static const char *TAG = "thegreatme_ble";
 static const char *DEVICE_NAME = "AI Passport";
 #define PASSPORT_UI_VERSION "0.2"
 LV_FONT_DECLARE(lv_font_terminal_zh_16);
+LV_FONT_DECLARE(lv_font_terminal_extra_16);
 
 #define CTRL_CHARACTERISTIC_UUID 0xA2B1
 #define EVENT_CHARACTERISTIC_UUID 0xA2B2
@@ -82,6 +83,7 @@ typedef enum {
 typedef enum {
     COMPANION_PAGE_DASHBOARD = 0,
     COMPANION_PAGE_CONVERSATION,
+    COMPANION_PAGE_TASK_DETAIL,
     COMPANION_PAGE_SETTINGS,
 } companion_page_t;
 
@@ -118,6 +120,171 @@ static const companion_theme_t companion_themes[] = {
 };
 #define COMPANION_THEME_COUNT (sizeof(companion_themes) / sizeof(companion_themes[0]))
 
+typedef struct {
+    const char *app_name;
+    const char *terminal_name;
+    const char *theme_names[COMPANION_THEME_COUNT];
+    const char *goal_labels[3];
+    const char *goal_placeholders[3];
+    const char *tasks_title;
+    const char *wait_tasks;
+    const char *task_nav;
+    const char *task_detail_controls;
+    const char *footer;
+    const char *user_fallback;
+    const char *hq_name;
+    const char *chat_hold;
+    const char *chat_hq_speaking;
+    const char *chat_transcribing;
+    const char *chat_hq_typing;
+    const char *chat_continue;
+    const char *chat_disconnected;
+    const char *settings_title;
+    const char *connection_title;
+    const char *waiting_iphone;
+    const char *connected_iphone;
+    const char *firmware_title;
+    const char *theme_title;
+    const char *settings_controls;
+    const char *voice_recording;
+    const char *voice_task_recording;
+    const char *voice_release_send;
+    const char *voice_release_task;
+    const char *voice_connecting;
+    const char *voice_wait_phone;
+    const char *voice_release_cancel;
+    const char *voice_phone_linking;
+    const char *voice_task_sent;
+    const char *voice_transcribing;
+    const char *voice_task_analyzing;
+    const char *voice_no_iphone;
+    const char *voice_no_phone;
+    const char *voice_enable_hint;
+} companion_copy_t;
+
+static const companion_copy_t companion_copies[] = {
+    [PASSPORT_LANGUAGE_ZH_HANS] = {
+        "伟大的我", "特工终端", { "琥珀", "黑色", "暖白", "数码绿" },
+        { "本周目标", "本月目标", "年度目标" },
+        { "等待本周目标", "等待本月目标", "等待年度目标" },
+        "今日任务", "等待手机同步今日任务", "上下切换  双击确定全屏",
+        "上下切换  双击确定返回",
+        "长按上:对话  长按下:任务", "你", "总部", "长按上键说话", "总部说话中",
+        "听写中", "总部输入中", "长按上键继续", "连接中断", "系统设置", "连接状态",
+        "[等待 iPhone]", "● 已连接 iPhone", "固件版本", "主题选择",
+        "上键返回    确定键切换主题", "● 录音中", "● 正在整理任务", "松开发送",
+        "松开下键，交给 iPhone 分析", "连接中", "● 等待手机联动", "松开取消",
+        "手机联动中，松开可取消", "√ 已发送到任务分析", "听写中", "iPhone 正在拆解任务",
+        "未连接 iPhone", "！ 尚未连接手机", "请先在手机开启护照联动",
+    },
+    [PASSPORT_LANGUAGE_ZH_HANT] = {
+        "偉大的我", "特工終端", { "琥珀", "黑色", "暖白", "數碼綠" },
+        { "本週目標", "本月目標", "年度目標" },
+        { "等待本週目標", "等待本月目標", "等待年度目標" },
+        "今日任務", "等待手機同步今日任務", "上下切換  雙擊確定全屏",
+        "上下切換  雙擊確定返回",
+        "長按上:對話  長按下:任務", "你", "總部", "長按上鍵說話", "總部說話中",
+        "聽寫中", "總部輸入中", "長按上鍵繼續", "連線中斷", "系統設定", "連線狀態",
+        "[等待 iPhone]", "● 已連線 iPhone", "韌體版本", "主題選擇",
+        "上鍵返回    確定鍵切換主題", "● 錄音中", "● 正在整理任務", "鬆開傳送",
+        "鬆開下鍵，交給 iPhone 分析", "連線中", "● 等待手機連動", "鬆開取消",
+        "手機連動中，鬆開可取消", "√ 已傳送到任務分析", "聽寫中", "iPhone 正在拆解任務",
+        "未連線 iPhone", "！ 尚未連線手機", "請先在手機開啟護照連動",
+    },
+    [PASSPORT_LANGUAGE_EN] = {
+        "THE GREAT ME", "AGENT TERMINAL", { "AMBER", "BLACK", "WARM WHITE", "DIGITAL GREEN" },
+        { "WEEKLY GOAL", "MONTHLY GOAL", "ANNUAL GOAL" },
+        { "Waiting for weekly goal", "Waiting for monthly goal", "Waiting for annual goal" },
+        "TODAY'S TASKS", "Waiting for iPhone tasks", "UP/DOWN + OKx2: View",
+        "UP/DOWN: Switch  Double OK: Back",
+        "Hold UP: chat  DOWN: task", "YOU", "HQ", "Hold UP to talk", "HQ speaking",
+        "Transcribing", "HQ typing", "Hold UP to continue", "Connection lost", "SYSTEM SETTINGS",
+        "CONNECTION", "[WAITING FOR IPHONE]", "● IPHONE CONNECTED", "FIRMWARE", "THEME",
+        "UP: Back    OK: Change theme", "● RECORDING", "● TASK RECORDING", "Release to send",
+        "Release DOWN for iPhone", "Connecting", "● WAITING FOR IPHONE", "Release to cancel",
+        "Phone linking; release to cancel", "√ SENT FOR TASK ANALYSIS", "Transcribing",
+        "iPhone analyzing task", "No iPhone", "! PHONE NOT CONNECTED", "Enable AI Passport on iPhone",
+    },
+    [PASSPORT_LANGUAGE_ES] = {
+        "MI GRAN YO", "TERMINAL DE AGENTE", { "ÁMBAR", "NEGRO", "BLANCO", "VERDE DIGITAL" },
+        { "OBJETIVO SEMANAL", "OBJETIVO MENSUAL", "OBJETIVO ANUAL" },
+        { "Esperando objetivo semanal", "Esperando objetivo mensual", "Esperando objetivo anual" },
+        "TAREAS DE HOY", "Esperando tareas del iPhone", "UP/DOWN + OKx2: Ver",
+        "UP/DOWN: Cambiar  Doble OK: Volver",
+        "Mantén UP: chat  DOWN: tarea", "TÚ", "HQ", "Mantén UP para hablar", "HQ está hablando",
+        "Transcribiendo", "HQ está escribiendo", "Mantén UP para seguir", "Conexión perdida",
+        "AJUSTES", "CONEXIÓN", "[ESPERANDO IPHONE]", "● IPHONE CONECTADO", "FIRMWARE", "TEMA",
+        "UP: Volver    OK: Cambiar tema", "● GRABANDO", "● GRABANDO TAREA", "Suelta para enviar",
+        "Suelta DOWN para analizar", "Conectando", "● ESPERANDO IPHONE", "Suelta para cancelar",
+        "Conectando; suelta para cancelar", "√ ENVIADO PARA ANÁLISIS", "Transcribiendo",
+        "iPhone analiza la tarea", "Sin iPhone", "! IPHONE SIN CONEXIÓN", "Activa AI Passport en iPhone",
+    },
+    [PASSPORT_LANGUAGE_FR] = {
+        "LE GRAND MOI", "TERMINAL D'AGENT", { "AMBRE", "NOIR", "BLANC CHAUD", "VERT NUMÉRIQUE" },
+        { "OBJECTIF SEMAINE", "OBJECTIF MENSUEL", "OBJECTIF ANNUEL" },
+        { "Objectif semaine en attente", "Objectif mensuel en attente", "Objectif annuel en attente" },
+        "TÂCHES DU JOUR", "Tâches iPhone en attente", "UP/DOWN + OKx2: Voir",
+        "UP/DOWN: Changer  Double OK: Retour",
+        "Maintenir UP: chat DOWN: tâche", "VOUS", "HQ", "Maintenir UP pour parler", "HQ parle",
+        "Transcription", "HQ écrit", "Maintenir UP pour continuer", "Connexion perdue", "RÉGLAGES",
+        "CONNEXION", "[IPHONE EN ATTENTE]", "● IPHONE CONNECTÉ", "FIRMWARE", "THÈME",
+        "UP: Retour    OK: Changer thème", "● ENREGISTREMENT", "● NOTE DE TÂCHE", "Relâcher pour envoyer",
+        "Relâcher DOWN pour analyser", "Connexion", "● IPHONE EN ATTENTE", "Relâcher pour annuler",
+        "Connexion; relâcher pour annuler", "√ ENVOYÉ À L'ANALYSE", "Transcription",
+        "iPhone analyse la tâche", "Aucun iPhone", "! IPHONE NON CONNECTÉ", "Activez AI Passport sur iPhone",
+    },
+    [PASSPORT_LANGUAGE_DE] = {
+        "MEIN GROSSES ICH", "AGENTENTERMINAL", { "BERNSTEIN", "SCHWARZ", "WARMWEISS", "DIGITALGRÜN" },
+        { "WOCHENZIEL", "MONATSZIEL", "JAHRESZIEL" },
+        { "Warte auf Wochenziel", "Warte auf Monatsziel", "Warte auf Jahresziel" },
+        "HEUTIGE AUFGABEN", "Warte auf iPhone-Aufgaben", "UP/DOWN + OKx2: Ansicht",
+        "UP/DOWN: Wechsel  OK doppelt: Zurück",
+        "UP halten: Chat DOWN: Aufgabe", "DU", "HQ", "UP halten zum Sprechen", "HQ spricht",
+        "Transkription", "HQ schreibt", "UP halten zum Fortsetzen", "Verbindung getrennt", "EINSTELLUNGEN",
+        "VERBINDUNG", "[WARTE AUF IPHONE]", "● IPHONE VERBUNDEN", "FIRMWARE", "THEMA",
+        "UP: Zurück    OK: Thema", "● AUFNAHME", "● AUFGABE AUFNEHMEN", "Loslassen zum Senden",
+        "DOWN loslassen: Analyse", "Verbinden", "● WARTE AUF IPHONE", "Loslassen: Abbruch",
+        "Verbindung; loslassen: Abbruch", "√ ZUR ANALYSE GESENDET", "Transkription",
+        "iPhone analysiert Aufgabe", "Kein iPhone", "! IPHONE NICHT VERBUNDEN", "AI Passport am iPhone aktivieren",
+    },
+    [PASSPORT_LANGUAGE_KO] = {
+        "위대한 나", "요원 단말기", { "호박색", "검정", "따뜻한 흰색", "디지털 그린" },
+        { "주간 목표", "월간 목표", "연간 목표" },
+        { "주간 목표 대기 중", "월간 목표 대기 중", "연간 목표 대기 중" },
+        "오늘의 작업", "iPhone 작업 동기화 대기", "UP/DOWN + OKx2: 보기",
+        "UP/DOWN: 전환  OK 두 번: 돌아가기",
+        "UP 길게: 대화 DOWN: 작업", "나", "HQ", "UP을 길게 눌러 말하기", "HQ 말하는 중",
+        "받아쓰기 중", "HQ 입력 중", "UP을 길게 눌러 계속", "연결 끊김", "시스템 설정", "연결 상태",
+        "[IPHONE 대기]", "● IPHONE 연결됨", "펌웨어 버전", "테마 선택",
+        "UP: 돌아가기    OK: 테마 변경", "● 녹음 중", "● 작업 녹음 중", "놓아서 보내기",
+        "DOWN을 놓아 분석", "연결 중", "● IPHONE 대기", "놓아서 취소",
+        "연결 중; 놓아서 취소", "√ 작업 분석으로 전송됨", "받아쓰기 중", "iPhone 작업 분석 중",
+        "iPhone 미연결", "! 휴대폰 미연결", "iPhone에서 AI Passport 켜기",
+    },
+    [PASSPORT_LANGUAGE_JA] = {
+        "偉大な私", "エージェント端末", { "アンバー", "ブラック", "ウォーム白", "デジタル緑" },
+        { "今週の目標", "今月の目標", "年間目標" },
+        { "今週の目標を待機", "今月の目標を待機", "年間目標を待機" },
+        "今日のタスク", "iPhoneのタスクを待機", "UP/DOWN + OKx2: 全画面",
+        "UP/DOWN: 切替  OK 2回: 戻る",
+        "UP長押し: 会話 DOWN: タスク", "あなた", "HQ", "UP長押しで話す", "HQが発話中",
+        "文字起こし中", "HQが入力中", "UP長押しで続ける", "接続が切れました", "システム設定", "接続状態",
+        "[IPHONE待機]", "● IPHONE接続済み", "ファームウェア", "テーマ選択",
+        "UP: 戻る    OK: テーマ変更", "● 録音中", "● タスク録音中", "離して送信",
+        "DOWNを離して分析", "接続中", "● IPHONE待機", "離してキャンセル",
+        "接続中; 離してキャンセル", "√ タスク分析へ送信", "文字起こし中", "iPhoneがタスクを分析中",
+        "iPhone未接続", "! スマホ未接続", "iPhoneでAI Passportを有効化",
+    },
+};
+
+static const companion_copy_t *copy_for_language(passport_language_t language)
+{
+    if (language < PASSPORT_LANGUAGE_ZH_HANS || language > PASSPORT_LANGUAGE_JA) {
+        language = PASSPORT_LANGUAGE_ZH_HANS;
+    }
+    return &companion_copies[language];
+}
+
 static const ble_uuid16_t service_uuid = BLE_UUID16_INIT(0xA2B0);
 
 static lv_obj_t *s_screen;
@@ -129,12 +296,16 @@ static lv_obj_t *s_goal_card;
 static lv_obj_t *s_goal_caption;
 static lv_obj_t *s_goal_label;
 static lv_obj_t *s_progress_bar;
-static lv_obj_t *s_progress_label;
 static lv_obj_t *s_nav_label;
 static lv_obj_t *s_tasks_card;
 static lv_obj_t *s_tasks_caption;
 static lv_obj_t *s_task_labels[PASSPORT_BOARD_TASK_COUNT];
 static lv_obj_t *s_footer_label;
+static lv_obj_t *s_task_detail_card;
+static lv_obj_t *s_task_detail_caption;
+static lv_obj_t *s_task_detail_status;
+static lv_obj_t *s_task_detail_text;
+static lv_obj_t *s_task_detail_controls;
 static lv_obj_t *s_voice_panel;
 static lv_obj_t *s_voice_title;
 static lv_obj_t *s_voice_hint;
@@ -142,17 +313,24 @@ static lv_obj_t *s_voice_bars[VOICE_BAR_COUNT];
 static lv_obj_t *s_chat_card;
 static lv_obj_t *s_chat_user_name_label;
 static lv_obj_t *s_chat_user_label;
+static lv_obj_t *s_chat_hq_name_label;
 static lv_obj_t *s_chat_answer_view;
 static lv_obj_t *s_chat_answer_label;
 static lv_obj_t *s_chat_status_label;
 static lv_obj_t *s_settings_card;
+static lv_obj_t *s_settings_title_label;
+static lv_obj_t *s_settings_connection_title_label;
 static lv_obj_t *s_settings_theme_label;
 static lv_obj_t *s_settings_ble_label;
+static lv_obj_t *s_settings_firmware_title_label;
+static lv_obj_t *s_settings_theme_title_label;
+static lv_obj_t *s_settings_controls_label;
 static lv_timer_t *s_timer;
 static unsigned s_theme_index;
 static unsigned s_scope_index;
 static unsigned s_task_index;
 static unsigned s_voice_anim_frame;
+static passport_language_t s_ui_language;
 static uint32_t s_voice_feedback_until;
 static bool s_voice_feedback_sent;
 static int8_t s_rendered_connection_signal;
@@ -202,6 +380,7 @@ static QueueHandle_t s_speaker_queue;
 
 static int gap_event(struct ble_gap_event *event, void *arg);
 static void advertise(void);
+static void apply_language(passport_language_t language);
 
 static void board_store(const passport_board_t *board)
 {
@@ -857,18 +1036,16 @@ static void ble_stop(void)
 
 static void render_board(const passport_board_t *board)
 {
-    static const char *scope_names[] = { "本周", "本月", "年度" };
-    static const char *fallback_goals[] = { "等待本周目标", "等待本月目标", "等待年度目标" };
+    const companion_copy_t *copy = copy_for_language(board->language);
     const char *goals[] = { board->week_goal, board->month_goal, board->year_goal };
     const companion_theme_t *theme = &companion_themes[s_theme_index];
 
-    lv_label_set_text_fmt(s_goal_caption, "%s目标 %u/3", scope_names[s_scope_index], s_scope_index + 1);
+    lv_label_set_text_fmt(s_goal_caption, "%s %u/3", copy->goal_labels[s_scope_index], s_scope_index + 1);
     lv_label_set_text(
         s_goal_label,
-        goals[s_scope_index][0] ? goals[s_scope_index] : fallback_goals[s_scope_index]
+        goals[s_scope_index][0] ? goals[s_scope_index] : copy->goal_placeholders[s_scope_index]
     );
     lv_bar_set_value(s_progress_bar, board->progress, LV_ANIM_ON);
-    lv_label_set_text_fmt(s_progress_label, "%03u%%", board->progress);
 
     unsigned completed = 0;
     for (uint8_t i = 0; i < board->task_count; i++) {
@@ -879,7 +1056,7 @@ static void render_board(const passport_board_t *board)
     } else if (s_task_index >= board->task_count) {
         s_task_index = board->task_count - 1;
     }
-    lv_label_set_text_fmt(s_tasks_caption, "今日任务 %u/%u", completed, board->task_count);
+    lv_label_set_text_fmt(s_tasks_caption, "%s %u/%u", copy->tasks_title, completed, board->task_count);
 
     for (uint8_t i = 0; i < PASSPORT_BOARD_TASK_COUNT; i++) {
         if (i >= board->task_count || !board->tasks[i].text[0]) {
@@ -907,9 +1084,37 @@ static void render_board(const passport_board_t *board)
         lv_obj_set_style_text_color(s_task_labels[i], lv_color_hex(color), 0);
     }
     if (board->task_count == 0) {
-        lv_label_set_text(s_task_labels[0], "等待手机同步今日任务");
+        lv_label_set_text(s_task_labels[0], copy->wait_tasks);
         lv_obj_set_style_text_color(s_task_labels[0], lv_color_hex(theme->secondary), 0);
     }
+
+    if (board->task_count == 0) {
+        lv_label_set_text(s_task_detail_caption, copy->tasks_title);
+        lv_label_set_text(s_task_detail_status, "");
+        lv_label_set_text(s_task_detail_text, copy->wait_tasks);
+        return;
+    }
+
+    const passport_task_t *task = &board->tasks[s_task_index];
+    const char *marker = "□";
+    uint32_t color = theme->primary;
+    if (task->status == PASSPORT_TASK_DONE) {
+        marker = "√";
+        color = theme->secondary;
+    } else if (task->status == PASSPORT_TASK_BLOCKED) {
+        marker = "！";
+        color = theme->accent;
+    }
+    lv_label_set_text_fmt(
+        s_task_detail_caption,
+        "%s  %u/%u",
+        copy->tasks_title,
+        s_task_index + 1,
+        board->task_count
+    );
+    lv_label_set_text(s_task_detail_status, marker);
+    lv_obj_set_style_text_color(s_task_detail_status, lv_color_hex(color), 0);
+    lv_label_set_text(s_task_detail_text, task->text);
 }
 
 static void scroll_chat_answer_to_bottom(lv_anim_enable_t anim)
@@ -927,10 +1132,11 @@ static void set_chat_answer_height(int32_t height)
 
 static void render_chat(const passport_board_t *board)
 {
+    const companion_copy_t *copy = copy_for_language(board->language);
     lv_label_set_text_fmt(
         s_chat_user_name_label,
         "%s >",
-        board->user_name[0] ? board->user_name : "你"
+        board->user_name[0] ? board->user_name : copy->user_fallback
     );
     lv_label_set_text(
         s_chat_user_label,
@@ -943,22 +1149,22 @@ static void render_chat(const passport_board_t *board)
             s_companion_page == COMPANION_PAGE_CONVERSATION ? LV_ANIM_ON : LV_ANIM_OFF
         );
     }
-    const char *status = "长按上键说话";
+    const char *status = copy->chat_hold;
     if (s_speaker_active) {
-        status = "总部说话中";
+        status = copy->chat_hq_speaking;
     } else {
         switch (board->dialogue_status) {
         case PASSPORT_DIALOGUE_TRANSCRIBING:
-            status = "听写中";
+            status = copy->chat_transcribing;
             break;
         case PASSPORT_DIALOGUE_THINKING:
-            status = "总部输入中";
+            status = copy->chat_hq_typing;
             break;
         case PASSPORT_DIALOGUE_ANSWERED:
-            status = "长按上键继续";
+            status = copy->chat_continue;
             break;
         case PASSPORT_DIALOGUE_ERROR:
-            status = "连接中断";
+            status = copy->chat_disconnected;
             break;
         default:
             break;
@@ -990,26 +1196,26 @@ static void render_connection_signal(void)
 
 static void render_settings(void)
 {
-    const companion_theme_t *theme = &companion_themes[s_theme_index];
+    const companion_copy_t *copy = copy_for_language(s_ui_language);
     lv_label_set_text_fmt(
         s_settings_theme_label,
         "[%s]  %u/%u",
-        theme->name,
+        copy->theme_names[s_theme_index],
         s_theme_index + 1,
         (unsigned)COMPANION_THEME_COUNT
     );
     lv_label_set_text(
         s_settings_ble_label,
         companion_connected()
-            ? "● 已连接 iPhone"
-            : "[等待 iPhone]"
+            ? copy->connected_iphone
+            : copy->waiting_iphone
     );
 }
 
 static void show_companion_page(companion_page_t page)
 {
     s_companion_page = page;
-    if (page == COMPANION_PAGE_SETTINGS) {
+    if (page == COMPANION_PAGE_SETTINGS || page == COMPANION_PAGE_TASK_DETAIL) {
         lv_obj_add_flag(s_header_box, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_remove_flag(s_header_box, LV_OBJ_FLAG_HIDDEN);
@@ -1018,19 +1224,30 @@ static void show_companion_page(companion_page_t page)
         lv_obj_remove_flag(s_goal_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(s_tasks_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_task_detail_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
     } else if (page == COMPANION_PAGE_CONVERSATION) {
         lv_obj_add_flag(s_goal_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_tasks_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_task_detail_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
         passport_board_t board = board_load(NULL);
         render_chat(&board);
         scroll_chat_answer_to_bottom(LV_ANIM_OFF);
+    } else if (page == COMPANION_PAGE_TASK_DETAIL) {
+        lv_obj_add_flag(s_goal_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_tasks_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_remove_flag(s_task_detail_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
+        passport_board_t board = board_load(NULL);
+        render_board(&board);
     } else {
         lv_obj_add_flag(s_goal_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_tasks_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_add_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(s_task_detail_card, LV_OBJ_FLAG_HIDDEN);
         lv_obj_remove_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
         render_settings();
     }
@@ -1043,6 +1260,7 @@ static bool voice_feedback_active(uint32_t now)
 
 static void render_voice_panel(uint32_t now)
 {
+    const companion_copy_t *copy = copy_for_language(s_ui_language);
     bool feedback = voice_feedback_active(now);
     bool visible = s_companion_page != COMPANION_PAGE_SETTINGS
                 && (s_ptt_active || s_recording || feedback);
@@ -1097,20 +1315,20 @@ static void render_voice_panel(uint32_t now)
     }
     bool routes_to_task = s_ptt_route == PTT_ROUTE_TASK;
     if (s_recording) {
-        lv_label_set_text(s_voice_title, routes_to_task ? "● 正在整理任务" : "● 录音中");
-        lv_label_set_text(s_voice_hint, routes_to_task ? "松开下键，交给 iPhone 分析" : "松开发送");
+        lv_label_set_text(s_voice_title, routes_to_task ? copy->voice_task_recording : copy->voice_recording);
+        lv_label_set_text(s_voice_hint, routes_to_task ? copy->voice_release_task : copy->voice_release_send);
         lv_obj_set_style_text_color(s_voice_title, lv_color_hex(theme->accent), 0);
     } else if (s_ptt_active) {
-        lv_label_set_text(s_voice_title, inline_conversation ? "连接中" : "● 等待手机联动");
-        lv_label_set_text(s_voice_hint, inline_conversation ? "松开取消" : "手机联动中，松开可取消");
+        lv_label_set_text(s_voice_title, inline_conversation ? copy->voice_connecting : copy->voice_wait_phone);
+        lv_label_set_text(s_voice_hint, inline_conversation ? copy->voice_release_cancel : copy->voice_phone_linking);
         lv_obj_set_style_text_color(s_voice_title, lv_color_hex(theme->primary), 0);
     } else if (s_voice_feedback_sent) {
-        lv_label_set_text(s_voice_title, routes_to_task ? "√ 已发送到任务分析" : "听写中");
-        lv_label_set_text(s_voice_hint, routes_to_task ? "iPhone 正在拆解任务" : "");
+        lv_label_set_text(s_voice_title, routes_to_task ? copy->voice_task_sent : copy->voice_transcribing);
+        lv_label_set_text(s_voice_hint, routes_to_task ? copy->voice_task_analyzing : "");
         lv_obj_set_style_text_color(s_voice_title, lv_color_hex(theme->accent), 0);
     } else {
-        lv_label_set_text(s_voice_title, inline_conversation ? "未连接 iPhone" : "！ 尚未连接手机");
-        lv_label_set_text(s_voice_hint, inline_conversation ? "" : "请先在手机开启护照联动");
+        lv_label_set_text(s_voice_title, inline_conversation ? copy->voice_no_iphone : copy->voice_no_phone);
+        lv_label_set_text(s_voice_hint, inline_conversation ? "" : copy->voice_enable_hint);
         lv_obj_set_style_text_color(s_voice_title, lv_color_hex(theme->accent), 0);
     }
 
@@ -1134,12 +1352,15 @@ static void render_voice_panel(uint32_t now)
 static void tick(lv_timer_t *timer)
 {
     (void)timer;
+    uint32_t revision;
+    passport_board_t board = board_load(&revision);
+    if (board.language != s_ui_language) {
+        apply_language(board.language);
+    }
     uint32_t now = (uint32_t)xTaskGetTickCount();
     render_voice_panel(now);
     render_connection_signal();
 
-    uint32_t revision;
-    passport_board_t board = board_load(&revision);
     if (s_companion_page == COMPANION_PAGE_SETTINGS) render_settings();
     if (revision == s_rendered_revision) {
         if (s_companion_page == COMPANION_PAGE_CONVERSATION) render_chat(&board);
@@ -1166,7 +1387,7 @@ static lv_obj_t *make_terminal_label(lv_obj_t *parent, const char *text, int x, 
 {
     lv_obj_t *label = lv_label_create(parent);
     lv_obj_set_pos(label, x, y);
-    lv_obj_set_style_text_font(label, &lv_font_terminal_zh_16, 0);
+    lv_obj_set_style_text_font(label, &lv_font_terminal_extra_16, 0);
     lv_label_set_text(label, text);
     return label;
 }
@@ -1177,9 +1398,28 @@ static lv_obj_t *make_value_label(lv_obj_t *parent, int x, int y, int width, int
     lv_obj_set_pos(label, x, y);
     lv_obj_set_size(label, width, height);
     lv_label_set_long_mode(label, LV_LABEL_LONG_WRAP);
-    lv_obj_set_style_text_font(label, &lv_font_terminal_zh_16, 0);
+    lv_obj_set_style_text_font(label, &lv_font_terminal_extra_16, 0);
     lv_obj_set_style_text_line_space(label, 3, 0);
     return label;
+}
+
+static void apply_language(passport_language_t language)
+{
+    const companion_copy_t *copy = copy_for_language(language);
+    s_ui_language = language;
+    lv_label_set_text(s_brand_label, copy->app_name);
+    lv_label_set_text(s_status_label, copy->terminal_name);
+    lv_label_set_text(s_nav_label, copy->task_nav);
+    lv_label_set_text(s_footer_label, copy->footer);
+    lv_label_set_text(s_task_detail_controls, copy->task_detail_controls);
+    lv_label_set_text_fmt(s_chat_hq_name_label, "%s >", copy->hq_name);
+    lv_label_set_text(s_settings_title_label, copy->settings_title);
+    lv_label_set_text(s_settings_connection_title_label, copy->connection_title);
+    lv_label_set_text(s_settings_firmware_title_label, copy->firmware_title);
+    lv_label_set_text(s_settings_theme_title_label, copy->theme_title);
+    lv_label_set_text(s_settings_controls_label, copy->settings_controls);
+    render_settings();
+    s_rendered_revision = UINT32_MAX;
 }
 
 static void apply_theme(void)
@@ -1189,7 +1429,6 @@ static void apply_theme(void)
     lv_obj_set_style_text_color(s_brand_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_status_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_goal_caption, lv_color_hex(theme->secondary), 0);
-    lv_obj_set_style_text_color(s_progress_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_goal_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_nav_label, lv_color_hex(theme->secondary), 0);
     lv_obj_set_style_text_color(s_tasks_caption, lv_color_hex(theme->secondary), 0);
@@ -1197,6 +1436,9 @@ static void apply_theme(void)
         lv_obj_set_style_text_color(s_task_labels[i], lv_color_hex(theme->primary), 0);
     }
     lv_obj_set_style_text_color(s_footer_label, lv_color_hex(theme->secondary), 0);
+    lv_obj_set_style_text_color(s_task_detail_caption, lv_color_hex(theme->secondary), 0);
+    lv_obj_set_style_text_color(s_task_detail_text, lv_color_hex(theme->primary), 0);
+    lv_obj_set_style_text_color(s_task_detail_controls, lv_color_hex(theme->secondary), 0);
     lv_obj_set_style_text_color(s_voice_title, lv_color_hex(theme->accent), 0);
     lv_obj_set_style_text_color(s_voice_hint, lv_color_hex(theme->secondary), 0);
     lv_obj_set_style_text_color(s_chat_card, lv_color_hex(theme->primary), 0);
@@ -1215,6 +1457,7 @@ static void apply_theme(void)
         s_header_box,
         s_goal_card,
         s_tasks_card,
+        s_task_detail_card,
         s_settings_card,
         s_voice_panel,
     };
@@ -1293,12 +1536,11 @@ void demo_ble_enter(void)
     s_goal_label = make_value_label(s_goal_card, 7, 23, 210, 39);
     lv_label_set_text(s_goal_label, "等待本周目标");
     s_progress_bar = lv_bar_create(s_goal_card);
-    lv_obj_set_size(s_progress_bar, 166, 7);
+    lv_obj_set_size(s_progress_bar, 210, 7);
     lv_obj_set_pos(s_progress_bar, 7, 70);
     lv_obj_set_style_radius(s_progress_bar, 0, LV_PART_MAIN);
     lv_obj_set_style_radius(s_progress_bar, 0, LV_PART_INDICATOR);
     lv_bar_set_range(s_progress_bar, 0, 100);
-    s_progress_label = make_terminal_label(s_goal_card, "000%", 180, 62);
     s_nav_label = make_terminal_label(s_goal_card, "短按上下键切换今日任务", 7, 82);
 
     s_tasks_card = make_terminal_box(s_screen, 8, 158, 224, 154);
@@ -1309,6 +1551,14 @@ void demo_ble_enter(void)
     }
     lv_label_set_text(s_task_labels[0], "等待手机同步今日任务");
     s_footer_label = make_terminal_label(s_tasks_card, "长按上:对话  长按下:任务", 7, 133);
+
+    s_task_detail_card = make_terminal_box(s_screen, 0, 0, 240, 320);
+    s_task_detail_caption = make_terminal_label(s_task_detail_card, "今日任务", 10, 8);
+    s_task_detail_status = make_terminal_label(s_task_detail_card, "□", 10, 54);
+    s_task_detail_text = make_value_label(s_task_detail_card, 10, 83, 220, 180);
+    s_task_detail_controls = make_value_label(s_task_detail_card, 10, 276, 220, 36);
+    lv_label_set_text(s_task_detail_controls, "上下切换  双击确定返回");
+    lv_obj_add_flag(s_task_detail_card, LV_OBJ_FLAG_HIDDEN);
 
     s_chat_card = lv_obj_create(s_screen);
     lv_obj_remove_flag(s_chat_card, LV_OBJ_FLAG_SCROLLABLE);
@@ -1323,7 +1573,7 @@ void demo_ble_enter(void)
     lv_obj_set_style_text_align(s_chat_user_name_label, LV_TEXT_ALIGN_RIGHT, 0);
     s_chat_user_label = make_value_label(s_chat_card, 48, 24, 176, 54);
     lv_obj_set_style_text_align(s_chat_user_label, LV_TEXT_ALIGN_RIGHT, 0);
-    make_terminal_label(s_chat_card, "总部 >", 0, 91);
+    s_chat_hq_name_label = make_terminal_label(s_chat_card, "总部 >", 0, 91);
     s_chat_answer_view = lv_obj_create(s_chat_card);
     lv_obj_set_pos(s_chat_answer_view, 0, 112);
     lv_obj_set_size(s_chat_answer_view, 176, CHAT_ANSWER_HEIGHT);
@@ -1337,14 +1587,14 @@ void demo_ble_enter(void)
     lv_obj_add_flag(s_chat_card, LV_OBJ_FLAG_HIDDEN);
 
     s_settings_card = make_terminal_box(s_screen, 0, 0, 240, 320);
-    make_terminal_label(s_settings_card, "系统设置", 10, 8);
-    make_terminal_label(s_settings_card, "连接状态", 10, 52);
+    s_settings_title_label = make_terminal_label(s_settings_card, "系统设置", 10, 8);
+    s_settings_connection_title_label = make_terminal_label(s_settings_card, "连接状态", 10, 52);
     s_settings_ble_label = make_terminal_label(s_settings_card, "[等待 iPhone]", 10, 80);
-    make_terminal_label(s_settings_card, "固件版本", 10, 126);
+    s_settings_firmware_title_label = make_terminal_label(s_settings_card, "固件版本", 10, 126);
     make_terminal_label(s_settings_card, "AI Passport " PASSPORT_UI_VERSION, 10, 154);
-    make_terminal_label(s_settings_card, "主题选择", 10, 200);
+    s_settings_theme_title_label = make_terminal_label(s_settings_card, "主题选择", 10, 200);
     s_settings_theme_label = make_terminal_label(s_settings_card, "[琥珀]  1/4", 10, 228);
-    make_terminal_label(s_settings_card, "上键返回    确定键切换主题", 10, 289);
+    s_settings_controls_label = make_terminal_label(s_settings_card, "上键返回    确定键切换主题", 10, 289);
     lv_obj_add_flag(s_settings_card, LV_OBJ_FLAG_HIDDEN);
 
     s_voice_panel = make_terminal_box(s_screen, 12, 176, 216, 128);
@@ -1362,6 +1612,7 @@ void demo_ble_enter(void)
     s_voice_hint = make_terminal_label(s_voice_panel, "松开按键发送到 iPhone", 10, 100);
     lv_obj_add_flag(s_voice_panel, LV_OBJ_FLAG_HIDDEN);
 
+    apply_language(PASSPORT_LANGUAGE_ZH_HANS);
     apply_theme();
     show_companion_page(COMPANION_PAGE_DASHBOARD);
     s_timer = lv_timer_create(tick, 100, NULL);
@@ -1401,7 +1652,6 @@ void demo_ble_exit(void)
         s_goal_caption = NULL;
         s_goal_label = NULL;
         s_progress_bar = NULL;
-        s_progress_label = NULL;
         s_nav_label = NULL;
         s_tasks_card = NULL;
         s_tasks_caption = NULL;
@@ -1409,6 +1659,11 @@ void demo_ble_exit(void)
             s_task_labels[i] = NULL;
         }
         s_footer_label = NULL;
+        s_task_detail_card = NULL;
+        s_task_detail_caption = NULL;
+        s_task_detail_status = NULL;
+        s_task_detail_text = NULL;
+        s_task_detail_controls = NULL;
         s_voice_panel = NULL;
         s_voice_title = NULL;
         s_voice_hint = NULL;
@@ -1418,12 +1673,18 @@ void demo_ble_exit(void)
         s_chat_card = NULL;
         s_chat_user_name_label = NULL;
         s_chat_user_label = NULL;
+        s_chat_hq_name_label = NULL;
         s_chat_answer_view = NULL;
         s_chat_answer_label = NULL;
         s_chat_status_label = NULL;
         s_settings_card = NULL;
+        s_settings_title_label = NULL;
+        s_settings_connection_title_label = NULL;
         s_settings_theme_label = NULL;
         s_settings_ble_label = NULL;
+        s_settings_firmware_title_label = NULL;
+        s_settings_theme_title_label = NULL;
+        s_settings_controls_label = NULL;
     }
 }
 
@@ -1504,7 +1765,8 @@ void demo_ble_key(bsp_btn_t button, bsp_btn_ev_t event)
             ESP_LOGI(TAG, "上键短按,返回任务主页");
             return;
         }
-        if (s_companion_page == COMPANION_PAGE_DASHBOARD) {
+        if (s_companion_page == COMPANION_PAGE_DASHBOARD
+            || s_companion_page == COMPANION_PAGE_TASK_DETAIL) {
             move_task_selection(-1);
         }
         return;
@@ -1513,8 +1775,24 @@ void demo_ble_key(bsp_btn_t button, bsp_btn_ev_t event)
     if (button == BSP_BTN_DOWN && event == BSP_BTN_CLICK) {
         if (s_companion_page == COMPANION_PAGE_CONVERSATION) {
             show_companion_page(COMPANION_PAGE_DASHBOARD);
-        } else if (s_companion_page == COMPANION_PAGE_DASHBOARD) {
+        } else if (s_companion_page == COMPANION_PAGE_DASHBOARD
+                   || s_companion_page == COMPANION_PAGE_TASK_DETAIL) {
             move_task_selection(1);
+        }
+        return;
+    }
+
+    if (button == BSP_BTN_OK && event == BSP_BTN_DOUBLE) {
+        if (s_companion_page == COMPANION_PAGE_TASK_DETAIL) {
+            show_companion_page(COMPANION_PAGE_DASHBOARD);
+            ESP_LOGI(TAG, "双击确定键,返回任务主页");
+        } else if (s_companion_page == COMPANION_PAGE_DASHBOARD) {
+            passport_board_t board = board_load(NULL);
+            if (board.task_count > 0) {
+                show_companion_page(COMPANION_PAGE_TASK_DETAIL);
+                ESP_LOGI(TAG, "双击确定键,全屏查看任务:%u/%u",
+                         s_task_index + 1, (unsigned)board.task_count);
+            }
         }
         return;
     }

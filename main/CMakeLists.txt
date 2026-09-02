@@ -10,6 +10,7 @@ idf_component_register(
          "demo_wifi.c"
          "demo_ble.c"
          "lv_font_terminal_zh_16.c"
+         "lv_font_terminal_extra_16.c"
          "passport_protocol.c"
          "adpcm.c"
          "demo_low_power.c"

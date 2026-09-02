@@ -37,7 +37,7 @@ AI 应先完成以下检查：
 | 音频 | ES8311，播放 + 麦克风录音 | I2C 控制 + I2S0 全双工 | 播放与录音页 |
 | 电池 | CW2017 电量计 | 共享 I2C0，地址 0x63 | 可缺省 SOC/电压驱动 |
 | Wi-Fi | ESP32-C3 2.4 GHz STA | 应用页按需初始化 | 扫描页 |
-| Bluetooth LE | ESP32-C3 NimBLE peripheral | 应用页按需初始化 | 不可连接广播页 |
+| Bluetooth LE | ESP32-C3 NimBLE peripheral | 应用页按需初始化 | 可连接加密外设、持久配对与任务/音频联动 |
 | 低功耗 | ESP32-C3 light/deep sleep | RTC timer 唤醒 | 2 秒 light sleep 和 5 秒 deep sleep 模式 |
 | 日志 | USB Serial/JTAG | 原生 USB GPIO18/19 | 已配置 |
 
@@ -425,7 +425,7 @@ idf.py flash monitor
 | codec/I2S | 1 kHz 音调频率/速度、录音非零且回放速度正确、格式切换、退出页面 |
 | 电池 | 合理 SOC 和 mV、无电量计时正确降级、断续 I2C 的错误恢复表现 |
 | Wi-Fi | 扫描总数和 SSID/RSSI 可见、OK 重扫描、反复进出后仍可扫描 |
-| Bluetooth LE | 手机看到 `FoloPassport`、OK 重启广播、退出后广播消失、反复进出无重启 |
+| Bluetooth LE | 手机看到可连接的 `AI Passport`、事件/音频加密特征订阅成功、重连后配对恢复、反复进入终端和菜单无重启 |
 | light/deep sleep | Low Power 页用 UP/DOWN 选择、OK 执行；light sleep 约 2 秒后原地恢复背光；deep sleep 约 5 秒后重启，页面显示 timer 唤醒和 RTC 保留计数 |
 | DMA/内存/UI | build 内存报告、运行时最小堆/最大块、音频与刷屏并发稳定性 |
 

@@ -20,8 +20,9 @@ second development; the fork conventions are in
 - Follow [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) when participating in the
   community. For ordinary usage questions, see [`SUPPORT.md`](SUPPORT.md).
 - Do not commit credentials, tokens, authorization files, or personal data.
-- The repository's `main` branch stays in sync with the upstream baseline; fork
-  users develop feature work in `feature/*` branches (see `docs/fork-guide.md`).
+- This repository's `main` branch is the current product firmware. Develop
+  changes in `feature/*` branches and review upstream updates explicitly (see
+  `docs/fork-guide.md`).
 
 ## Development and verification
 

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "passport_protocol.h"
@@ -8,8 +9,9 @@ int main(void)
     passport_board_t board = { 0 };
     const char full[] =
         "P:42\nY:Build a durable product\nM:Ship the companion\nW:Finish this week's prototype\n"
-        "C:3\n0:OShip the BLE bridge\n1:BVerify ASR\n2:DDefine the protocol\n";
+        "C:3\n0:OShip the BLE bridge\n1:BVerify ASR\n2:DDefine the protocol\nL:en\n";
     assert(passport_board_apply(&board, (const uint8_t *)full, strlen(full)));
+    assert(board.language == PASSPORT_LANGUAGE_EN);
     assert(board.progress == 42);
     assert(strcmp(board.year_goal, "Build a durable product") == 0);
     assert(strcmp(board.month_goal, "Ship the companion") == 0);
@@ -19,6 +21,24 @@ int main(void)
     assert(strcmp(board.tasks[0].text, "Ship the BLE bridge") == 0);
     assert(board.tasks[1].status == PASSPORT_TASK_BLOCKED);
     assert(board.tasks[2].status == PASSPORT_TASK_DONE);
+
+    const char *languages[] = { "zh-Hans", "zh-Hant", "en", "es", "fr", "de", "ko", "ja" };
+    for (size_t i = 0; i < sizeof(languages) / sizeof(languages[0]); i++) {
+        char payload[16];
+        int length = snprintf(payload, sizeof(payload), "L:%s\n", languages[i]);
+        assert(length > 0);
+        assert(passport_board_apply(&board, (const uint8_t *)payload, (size_t)length));
+        assert(board.language == (passport_language_t)i);
+    }
+
+    passport_board_t before_invalid_language = board;
+    const char invalid_language[] = "L:unknown\n";
+    assert(!passport_board_apply(
+        &board,
+        (const uint8_t *)invalid_language,
+        strlen(invalid_language)
+    ));
+    assert(memcmp(&board, &before_invalid_language, sizeof(board)) == 0);
 
     const char dialogue[] =
         "U:星火\nQ:我接下来应该先做什么？\nS:H\n"

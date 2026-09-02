@@ -32,7 +32,19 @@ typedef enum {
     PASSPORT_DIALOGUE_ERROR,
 } passport_dialogue_status_t;
 
+typedef enum {
+    PASSPORT_LANGUAGE_ZH_HANS = 0,
+    PASSPORT_LANGUAGE_ZH_HANT,
+    PASSPORT_LANGUAGE_EN,
+    PASSPORT_LANGUAGE_ES,
+    PASSPORT_LANGUAGE_FR,
+    PASSPORT_LANGUAGE_DE,
+    PASSPORT_LANGUAGE_KO,
+    PASSPORT_LANGUAGE_JA,
+} passport_language_t;
+
 typedef struct {
+    passport_language_t language;
     uint8_t progress;
     char year_goal[PASSPORT_BOARD_TEXT_CAP + 1];
     char month_goal[PASSPORT_BOARD_TEXT_CAP + 1];
@@ -48,7 +60,8 @@ typedef struct {
 // Apply one UTF-8 board update sent by TheGreatMe. The compact wire format is:
 //   P:<0-100>\nY:<year goal>\nM:<month goal>\nW:<week goal>\n
 //   C:<0-5>\n0:<O|B|D><task text>\n ... 4:<O|B|D><task text>\n
-//   U:<user name>\nQ:<latest user text>\nA:<latest HQ answer>\nS:<I|T|H|A|E>\n
+//   U:<user name>\nL:<zh-Hans|zh-Hant|en|es|fr|de|ko|ja>\n
+//   Q:<latest user text>\nA:<latest HQ answer>\nS:<I|T|H|A|E>\n
 // Fields may be omitted for partial updates. Invalid input leaves board unchanged.
 bool passport_board_apply(passport_board_t *board, const uint8_t *payload, size_t len);
 

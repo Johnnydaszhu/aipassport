@@ -11,7 +11,7 @@
 
 首选 GitHub 的私密漏洞报告入口：
 
-<https://github.com/FoloToy/ai-passport/security/advisories/new>
+<https://github.com/Johnnydaszhu/aipassport/security/advisories/new>
 
 如果该入口对你不可用，请提交一个公开 issue，但只请求维护者提供私密安全联系方式，
 不要写入漏洞细节或复现材料；等待维护者提供私密渠道后再继续报告。
