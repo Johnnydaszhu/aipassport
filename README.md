@@ -14,6 +14,13 @@ is maintained separately and is required for task synchronization, speech
 recognition, AI replies, and reply audio. Without that companion, the firmware
 still boots and advertises over BLE, but the connected workflow cannot complete.
 
+## Product walkthrough
+
+![AI Passport terminal controls with white operation callouts](assets/images/thegreatme-passport-terminal-callouts-16x9.png)
+
+The 16:9 guide identifies the terminal display, the left-side power control, and
+the three right-side UP, OK, and DOWN controls used for task and voice actions.
+
 ## What is implemented
 
 - A 240 × 320 single-color terminal dashboard with four selectable themes.

@@ -12,6 +12,13 @@
 TheGreatMe iPhone 桥接端；没有配套 App 时，固件仍能启动并广播 BLE，但无法完成整套
 联动流程。
 
+## 产品操作图
+
+![带白色操作标注的 AI Passport 终端按键图](assets/images/thegreatme-passport-terminal-callouts-16x9.png)
+
+这张 16:9 操作图标出了终端屏幕、左侧电源键，以及右侧用于任务和语音操作的上键、
+确定键与下键；终端 UI 和外部标注均使用英文，便于公开展示。
+
 ## 已实现
 
 - 240 × 320 单色终端任务看板，内置四种可切换主题。

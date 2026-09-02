@@ -14,4 +14,8 @@
 
 ## 目录说明
 
-> 当前为空骨架，用于存放后续加入的图片资源。加入资源时请同步更新本 `README.md` 的索引。
+## 产品操作图资源
+
+| 文件 | 格式与尺寸 | 用途与来源 |
+| --- | --- | --- |
+| [`thegreatme-passport-terminal-callouts-16x9.png`](thegreatme-passport-terminal-callouts-16x9.png) | RGB PNG，1920 × 1080 | 用于公开 README 的操作说明图，基于项目自有的透明 AI Passport 终端 mockup。纯黑 16:9 画面使用白色引导线，分别说明屏幕、左侧电源键，以及右侧的上键、确定键和下键。该图片只用于文档，不会写入固件。 |
