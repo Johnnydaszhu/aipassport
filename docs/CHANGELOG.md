@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+- Let a short UP press stop an in-progress Headquarters voice reply immediately
+  without also navigating away from the current terminal page.
 - Match the Passport terminal chrome to the language selected in TheGreatMe.
   The BLE board protocol now carries the resolved App language and updates the
   terminal immediately for Simplified Chinese, Traditional Chinese, English,

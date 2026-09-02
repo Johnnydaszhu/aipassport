@@ -1733,6 +1733,12 @@ void demo_ble_key(bsp_btn_t button, bsp_btn_ev_t event)
 {
     uint32_t now = (uint32_t)xTaskGetTickCount();
 
+    if (button == BSP_BTN_UP && event == BSP_BTN_CLICK && s_speaker_active) {
+        abort_speaker_playback();
+        ESP_LOGI(TAG, "上键短按,停止总部语音播放");
+        return;
+    }
+
     if (button == BSP_BTN_UP && event == BSP_BTN_LONG
         && s_companion_page != COMPANION_PAGE_SETTINGS) {
         s_up_long_active = true;
