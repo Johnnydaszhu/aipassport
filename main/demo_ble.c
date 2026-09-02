@@ -23,6 +23,7 @@
 #include "host/ble_gatt.h"
 #include "host/ble_hs.h"
 #include "host/ble_hs_mbuf.h"
+#include "host/ble_store.h"
 #include "host/util/util.h"
 #include "lvgl.h"
 #include "nimble/nimble_port.h"
@@ -296,6 +297,7 @@ static lv_obj_t *s_goal_card;
 static lv_obj_t *s_goal_caption;
 static lv_obj_t *s_goal_label;
 static lv_obj_t *s_progress_bar;
+static lv_obj_t *s_progress_label;
 static lv_obj_t *s_nav_label;
 static lv_obj_t *s_tasks_card;
 static lv_obj_t *s_tasks_caption;
@@ -941,6 +943,25 @@ static int gap_event(struct ble_gap_event *event, void *argument)
         }
         break;
 
+    case BLE_GAP_EVENT_REPEAT_PAIRING: {
+        // The iPhone can forget its system bond while the Passport still has
+        // the old keys in NVS. Remove only that peer's stale bond and continue
+        // this pairing attempt instead of entering a connect/fail retry loop.
+        struct ble_gap_conn_desc descriptor;
+        int result = ble_gap_conn_find(event->repeat_pairing.conn_handle, &descriptor);
+        if (result != 0) {
+            ESP_LOGE(TAG, "无法读取重复配对连接:%d", result);
+            return BLE_GAP_REPEAT_PAIRING_IGNORE;
+        }
+        result = ble_store_util_delete_peer(&descriptor.peer_id_addr);
+        if (result != 0) {
+            ESP_LOGE(TAG, "无法清除失效配对:%d", result);
+            return BLE_GAP_REPEAT_PAIRING_IGNORE;
+        }
+        ESP_LOGW(TAG, "iPhone 配对已失效,已清除旧密钥并重新配对");
+        return BLE_GAP_REPEAT_PAIRING_RETRY;
+    }
+
     default:
         break;
     }
@@ -1046,6 +1067,7 @@ static void render_board(const passport_board_t *board)
         goals[s_scope_index][0] ? goals[s_scope_index] : copy->goal_placeholders[s_scope_index]
     );
     lv_bar_set_value(s_progress_bar, board->progress, LV_ANIM_ON);
+    lv_label_set_text_fmt(s_progress_label, "%u%%", board->progress);
 
     unsigned completed = 0;
     for (uint8_t i = 0; i < board->task_count; i++) {
@@ -1429,6 +1451,7 @@ static void apply_theme(void)
     lv_obj_set_style_text_color(s_brand_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_status_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_goal_caption, lv_color_hex(theme->secondary), 0);
+    lv_obj_set_style_text_color(s_progress_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_goal_label, lv_color_hex(theme->primary), 0);
     lv_obj_set_style_text_color(s_nav_label, lv_color_hex(theme->secondary), 0);
     lv_obj_set_style_text_color(s_tasks_caption, lv_color_hex(theme->secondary), 0);
@@ -1536,11 +1559,14 @@ void demo_ble_enter(void)
     s_goal_label = make_value_label(s_goal_card, 7, 23, 210, 39);
     lv_label_set_text(s_goal_label, "等待本周目标");
     s_progress_bar = lv_bar_create(s_goal_card);
-    lv_obj_set_size(s_progress_bar, 210, 7);
+    lv_obj_set_size(s_progress_bar, 166, 7);
     lv_obj_set_pos(s_progress_bar, 7, 70);
     lv_obj_set_style_radius(s_progress_bar, 0, LV_PART_MAIN);
     lv_obj_set_style_radius(s_progress_bar, 0, LV_PART_INDICATOR);
     lv_bar_set_range(s_progress_bar, 0, 100);
+    s_progress_label = make_value_label(s_goal_card, 179, 62, 38, 20);
+    lv_obj_set_style_text_align(s_progress_label, LV_TEXT_ALIGN_RIGHT, 0);
+    lv_label_set_text(s_progress_label, "0%");
     s_nav_label = make_terminal_label(s_goal_card, "短按上下键切换今日任务", 7, 82);
 
     s_tasks_card = make_terminal_box(s_screen, 8, 158, 224, 154);
@@ -1652,6 +1678,7 @@ void demo_ble_exit(void)
         s_goal_caption = NULL;
         s_goal_label = NULL;
         s_progress_bar = NULL;
+        s_progress_label = NULL;
         s_nav_label = NULL;
         s_tasks_card = NULL;
         s_tasks_caption = NULL;

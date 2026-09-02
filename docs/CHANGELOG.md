@@ -15,8 +15,8 @@
   full-screen detail view. UP/DOWN continues switching tasks there, and another
   double-OK returns to the dashboard without changing the existing single-OK
   Settings action.
-- Removed the numeric percentage from the Passport task dashboard while keeping
-  the goal progress bar as the visual progress indicator.
+- Kept the numeric percentage beside the Passport goal progress bar, formatted
+  naturally as `7%`, `42%`, or `100%` without zero padding.
 - Made Headquarters replies vertically scrollable and automatically follow the
   latest wrapped line. The viewport expands when idle and contracts during
   push-to-talk so long replies remain readable without covering the recording
@@ -31,9 +31,10 @@
   press return to the task dashboard while a long UP press continues speaking.
   Both UP and DOWN push-to-talk routes now play the same short rising cue before
   microphone capture starts, keeping the cue out of the recording sent to iPhone.
-- Persist the iPhone BLE bond used by the encrypted companion characteristics,
-  so ordinary App reinstalls and reconnects no longer leave CoreBluetooth and
-  the Passport with mismatched pairing keys.
+- Persist the iPhone BLE bond used by the encrypted companion characteristics
+  across ordinary disconnects and Passport restarts. If iOS has forgotten its
+  side of that bond, the Passport now removes only the stale peer keys and
+  continues the new pairing attempt instead of entering a reconnect loop.
 - Start directly in the TheGreatMe terminal after boot so BLE discovery and
   reconnection do not depend on manually reopening a demo page. Holding OK still
   exits to the hardware demo menu for diagnostics.
