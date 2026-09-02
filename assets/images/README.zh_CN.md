@@ -19,3 +19,4 @@
 | 文件 | 格式与尺寸 | 用途与来源 |
 | --- | --- | --- |
 | [`thegreatme-passport-terminal-callouts-16x9.png`](thegreatme-passport-terminal-callouts-16x9.png) | RGB PNG，1920 × 1080 | 用于公开 README 的操作说明图，基于项目自有的透明 AI Passport 终端 mockup。纯黑 16:9 画面使用白色引导线，分别说明屏幕、左侧电源键，以及右侧的上键、确定键和下键。该图片只用于文档，不会写入固件。 |
+| [`thegreatme-passport-terminal-callouts-zh-cn-16x9.png`](thegreatme-passport-terminal-callouts-zh-cn-16x9.png) | RGB PNG，1920 × 1080 | 同一公开 README 操作图的简体中文版本。保留终端外观、纯黑背景、按键映射和标注布局，并把终端屏幕与外部说明统一改为中文。该图片只用于文档，不会写入固件。 |
