@@ -168,8 +168,8 @@ static const companion_copy_t companion_copies[] = {
         "伟大的我", "特工终端", { "琥珀", "黑色", "暖白", "数码绿" },
         { "本周目标", "本月目标", "年度目标" },
         { "等待本周目标", "等待本月目标", "等待年度目标" },
-        "今日任务", "等待手机同步今日任务", "上下切换  双击确定全屏",
-        "上下切换  双击确定返回",
+        "今日任务", "等待手机同步今日任务", "确定:主题  双击:设置",
+        "上下切换  双击:设置",
         "长按上:对话  长按下:任务", "你", "总部", "长按上键说话", "总部说话中",
         "听写中", "总部输入中", "长按上键继续", "连接中断", "系统设置", "连接状态",
         "[等待 iPhone]", "● 已连接 iPhone", "固件版本", "主题选择",
@@ -182,8 +182,8 @@ static const companion_copy_t companion_copies[] = {
         "偉大的我", "特工終端", { "琥珀", "黑色", "暖白", "數碼綠" },
         { "本週目標", "本月目標", "年度目標" },
         { "等待本週目標", "等待本月目標", "等待年度目標" },
-        "今日任務", "等待手機同步今日任務", "上下切換  雙擊確定全屏",
-        "上下切換  雙擊確定返回",
+        "今日任務", "等待手機同步今日任務", "確定:主題  雙擊:設定",
+        "上下切換  雙擊:設定",
         "長按上:對話  長按下:任務", "你", "總部", "長按上鍵說話", "總部說話中",
         "聽寫中", "總部輸入中", "長按上鍵繼續", "連線中斷", "系統設定", "連線狀態",
         "[等待 iPhone]", "● 已連線 iPhone", "韌體版本", "主題選擇",
@@ -196,8 +196,8 @@ static const companion_copy_t companion_copies[] = {
         "THE GREAT ME", "AGENT TERMINAL", { "AMBER", "BLACK", "WARM WHITE", "DIGITAL GREEN" },
         { "WEEKLY GOAL", "MONTHLY GOAL", "ANNUAL GOAL" },
         { "Waiting for weekly goal", "Waiting for monthly goal", "Waiting for annual goal" },
-        "TODAY'S TASKS", "Waiting for iPhone tasks", "UP/DOWN + OKx2: View",
-        "UP/DOWN: Switch  Double OK: Back",
+        "TODAY'S TASKS", "Waiting for iPhone tasks", "OK: Theme  OKx2: Settings",
+        "UP/DOWN: Switch  OKx2: Settings",
         "Hold UP: chat  DOWN: task", "YOU", "HQ", "Hold UP to talk", "HQ speaking",
         "Transcribing", "HQ typing", "Hold UP to continue", "Connection lost", "SYSTEM SETTINGS",
         "CONNECTION", "[WAITING FOR IPHONE]", "● IPHONE CONNECTED", "FIRMWARE", "THEME",
@@ -210,8 +210,8 @@ static const companion_copy_t companion_copies[] = {
         "MI GRAN YO", "TERMINAL DE AGENTE", { "ÁMBAR", "NEGRO", "BLANCO", "VERDE DIGITAL" },
         { "OBJETIVO SEMANAL", "OBJETIVO MENSUAL", "OBJETIVO ANUAL" },
         { "Esperando objetivo semanal", "Esperando objetivo mensual", "Esperando objetivo anual" },
-        "TAREAS DE HOY", "Esperando tareas del iPhone", "UP/DOWN + OKx2: Ver",
-        "UP/DOWN: Cambiar  Doble OK: Volver",
+        "TAREAS DE HOY", "Esperando tareas del iPhone", "OK: Tema  OKx2: Ajustes",
+        "UP/DOWN: Cambiar  OKx2: Ajustes",
         "Mantén UP: chat  DOWN: tarea", "TÚ", "HQ", "Mantén UP para hablar", "HQ está hablando",
         "Transcribiendo", "HQ está escribiendo", "Mantén UP para seguir", "Conexión perdida",
         "AJUSTES", "CONEXIÓN", "[ESPERANDO IPHONE]", "● IPHONE CONECTADO", "FIRMWARE", "TEMA",
@@ -224,8 +224,8 @@ static const companion_copy_t companion_copies[] = {
         "LE GRAND MOI", "TERMINAL D'AGENT", { "AMBRE", "NOIR", "BLANC CHAUD", "VERT NUMÉRIQUE" },
         { "OBJECTIF SEMAINE", "OBJECTIF MENSUEL", "OBJECTIF ANNUEL" },
         { "Objectif semaine en attente", "Objectif mensuel en attente", "Objectif annuel en attente" },
-        "TÂCHES DU JOUR", "Tâches iPhone en attente", "UP/DOWN + OKx2: Voir",
-        "UP/DOWN: Changer  Double OK: Retour",
+        "TÂCHES DU JOUR", "Tâches iPhone en attente", "OK: Thème  OKx2: Réglages",
+        "UP/DOWN: Changer  OKx2: Réglages",
         "Maintenir UP: chat DOWN: tâche", "VOUS", "HQ", "Maintenir UP pour parler", "HQ parle",
         "Transcription", "HQ écrit", "Maintenir UP pour continuer", "Connexion perdue", "RÉGLAGES",
         "CONNEXION", "[IPHONE EN ATTENTE]", "● IPHONE CONNECTÉ", "FIRMWARE", "THÈME",
@@ -238,8 +238,8 @@ static const companion_copy_t companion_copies[] = {
         "MEIN GROSSES ICH", "AGENTENTERMINAL", { "BERNSTEIN", "SCHWARZ", "WARMWEISS", "DIGITALGRÜN" },
         { "WOCHENZIEL", "MONATSZIEL", "JAHRESZIEL" },
         { "Warte auf Wochenziel", "Warte auf Monatsziel", "Warte auf Jahresziel" },
-        "HEUTIGE AUFGABEN", "Warte auf iPhone-Aufgaben", "UP/DOWN + OKx2: Ansicht",
-        "UP/DOWN: Wechsel  OK doppelt: Zurück",
+        "HEUTIGE AUFGABEN", "Warte auf iPhone-Aufgaben", "OK: Thema  2xOK: Einst.",
+        "UP/DOWN: Wechsel  2xOK: Einst.",
         "UP halten: Chat DOWN: Aufgabe", "DU", "HQ", "UP halten zum Sprechen", "HQ spricht",
         "Transkription", "HQ schreibt", "UP halten zum Fortsetzen", "Verbindung getrennt", "EINSTELLUNGEN",
         "VERBINDUNG", "[WARTE AUF IPHONE]", "● IPHONE VERBUNDEN", "FIRMWARE", "THEMA",
@@ -252,8 +252,8 @@ static const companion_copy_t companion_copies[] = {
         "위대한 나", "요원 단말기", { "호박색", "검정", "따뜻한 흰색", "디지털 그린" },
         { "주간 목표", "월간 목표", "연간 목표" },
         { "주간 목표 대기 중", "월간 목표 대기 중", "연간 목표 대기 중" },
-        "오늘의 작업", "iPhone 작업 동기화 대기", "UP/DOWN + OKx2: 보기",
-        "UP/DOWN: 전환  OK 두 번: 돌아가기",
+        "오늘의 작업", "iPhone 작업 동기화 대기", "OK: 테마  OKx2: 설정",
+        "UP/DOWN: 전환  OKx2: 설정",
         "UP 길게: 대화 DOWN: 작업", "나", "HQ", "UP을 길게 눌러 말하기", "HQ 말하는 중",
         "받아쓰기 중", "HQ 입력 중", "UP을 길게 눌러 계속", "연결 끊김", "시스템 설정", "연결 상태",
         "[IPHONE 대기]", "● IPHONE 연결됨", "펌웨어 버전", "테마 선택",
@@ -266,8 +266,8 @@ static const companion_copy_t companion_copies[] = {
         "偉大な私", "エージェント端末", { "アンバー", "ブラック", "ウォーム白", "デジタル緑" },
         { "今週の目標", "今月の目標", "年間目標" },
         { "今週の目標を待機", "今月の目標を待機", "年間目標を待機" },
-        "今日のタスク", "iPhoneのタスクを待機", "UP/DOWN + OKx2: 全画面",
-        "UP/DOWN: 切替  OK 2回: 戻る",
+        "今日のタスク", "iPhoneのタスクを待機", "OK: テーマ  OKx2: 設定",
+        "UP/DOWN: 切替  OKx2: 設定",
         "UP長押し: 会話 DOWN: タスク", "あなた", "HQ", "UP長押しで話す", "HQが発話中",
         "文字起こし中", "HQが入力中", "UP長押しで続ける", "接続が切れました", "システム設定", "接続状態",
         "[IPHONE待機]", "● IPHONE接続済み", "ファームウェア", "テーマ選択",
@@ -1816,28 +1816,16 @@ void demo_ble_key(bsp_btn_t button, bsp_btn_ev_t event)
     }
 
     if (button == BSP_BTN_OK && event == BSP_BTN_DOUBLE) {
-        if (s_companion_page == COMPANION_PAGE_TASK_DETAIL) {
-            show_companion_page(COMPANION_PAGE_DASHBOARD);
-            ESP_LOGI(TAG, "双击确定键,返回任务主页");
-        } else if (s_companion_page == COMPANION_PAGE_DASHBOARD) {
-            passport_board_t board = board_load(NULL);
-            if (board.task_count > 0) {
-                show_companion_page(COMPANION_PAGE_TASK_DETAIL);
-                ESP_LOGI(TAG, "双击确定键,全屏查看任务:%u/%u",
-                         s_task_index + 1, (unsigned)board.task_count);
-            }
+        if (s_companion_page != COMPANION_PAGE_SETTINGS) {
+            s_settings_return_page = s_companion_page;
+            show_companion_page(COMPANION_PAGE_SETTINGS);
+            ESP_LOGI(TAG, "双击确定键,进入全屏设置");
         }
         return;
     }
 
     if (button == BSP_BTN_OK && event == BSP_BTN_CLICK) {
-        if (s_companion_page == COMPANION_PAGE_SETTINGS) {
-            s_theme_index = (s_theme_index + 1) % COMPANION_THEME_COUNT;
-            apply_theme();
-        } else {
-            s_settings_return_page = s_companion_page;
-            show_companion_page(COMPANION_PAGE_SETTINGS);
-            ESP_LOGI(TAG, "进入全屏设置:确定键");
-        }
+        s_theme_index = (s_theme_index + 1) % COMPANION_THEME_COUNT;
+        apply_theme();
     }
 }

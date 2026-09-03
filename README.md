@@ -40,7 +40,7 @@ Do not change product behavior, commit, or push unless I explicitly ask.
 - Hold **UP** to talk to Headquarters; short-press it to stop a playing reply.
 - Hold **DOWN** to capture and organize a task.
 - Short-press **UP/DOWN** to move between tasks.
-- Double-press **OK** to open or close the selected task.
+- Short-press **OK** to change theme; double-press it to open Settings.
 
 ## Output and safety
 

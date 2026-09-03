@@ -13,10 +13,9 @@
   terminal immediately for Simplified Chinese, Traditional Chinese, English,
   Spanish, French, German, Korean, and Japanese, with embedded glyph coverage
   for every localized terminal label.
-- Added quick double-OK from the task dashboard to open the selected task in a
-  full-screen detail view. UP/DOWN continues switching tasks there, and another
-  double-OK returns to the dashboard without changing the existing single-OK
-  Settings action.
+- Make a single OK press switch themes immediately from any terminal page, and
+  reserve double-OK for opening Settings. UP still returns from Settings to the
+  page that opened it.
 - Kept the numeric percentage beside the Passport goal progress bar, formatted
   naturally as `7%`, `42%`, or `100%` without zero padding.
 - Made Headquarters replies vertically scrollable and automatically follow the
