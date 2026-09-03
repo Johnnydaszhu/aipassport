@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- Added an on-demand, read-only publisher screenshot response that streams the
+  currently rendered terminal frame without retaining a full-screen copy or
+  changing user data and device settings.
 - Let a short UP press stop an in-progress Headquarters voice reply immediately
   without also navigating away from the current terminal page.
 - Match the Passport terminal chrome to the language selected in TheGreatMe.
